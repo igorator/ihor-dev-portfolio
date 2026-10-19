@@ -20,9 +20,7 @@
   "home": {
     "title": "Portfolio",
     "greeting": "Hello",
-    "introduction": "I'm Ihor",
-    "rolePrefix": "and I'm a",
-    "role": "Developer"
+    "introduction": "I'm Ihor"
   },
 
   "projects": {

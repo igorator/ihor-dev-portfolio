@@ -10,6 +10,40 @@
   margin-inline: auto;
 }
 
+/* Fade from the page background along the bottom edge, so the bar reads
+   over cards scrolling underneath it */
+.navbar::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  bottom: calc(-1 * (var(--space-4) + env(safe-area-inset-bottom)));
+  height: calc(100% + var(--space-4) * 4 + env(safe-area-inset-bottom));
+  background: linear-gradient(
+    to top,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 70%, transparent) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* A lighter fade along the top edge to frame the page */
+.navbar::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  inset-inline: 0;
+  top: 0;
+  height: var(--space-10, 48px);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--background) 80%, transparent) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
 .navbarLinks {
   width: 100%;
   display: flex;

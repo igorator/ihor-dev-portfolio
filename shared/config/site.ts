@@ -46,6 +46,6 @@ export const siteConfig = {
     brand: "Ihor Kliushnyk",
     subtitle: "Developer",
     // Keep in sync with --accent-dark in app/globals.css
-    accent: "#8fa3bf",
+    accent: "#7d8894",
   },
 } as const;

@@ -80,12 +80,6 @@ export const HomeSection = () => {
           <motion.span className={styles.name} variants={titleLine}>
             {t("home.introduction")}
           </motion.span>
-          <motion.span className={styles.rolePrefix} variants={titleLine}>
-            {t("home.rolePrefix")}
-          </motion.span>
-          <motion.span className={styles.role} variants={titleLine}>
-            {t("home.role")}
-          </motion.span>
         </motion.h1>
 
         <motion.div

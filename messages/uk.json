@@ -20,9 +20,7 @@
   "home": {
     "title": "Портфоліо",
     "greeting": "Вітаю",
-    "introduction": "Я Ігор",
-    "rolePrefix": "і я",
-    "role": "Розробник"
+    "introduction": "Я Ігор"
   },
 
   "projects": {

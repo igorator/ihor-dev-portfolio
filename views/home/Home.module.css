@@ -13,17 +13,18 @@
   --line-height-tight: 1.05;
   --letter-spacing-tight: -0.03em;
 
-  --greeting-font-size: clamp(16px, 1.6vw, 20px);
-  --name-font-size: clamp(40px, 6.5vw, 80px);
-  --role-prefix-font-size: clamp(15px, 1.5vw, 18px);
-  --role-font-size: clamp(28px, 3.6vw, 44px);
+  /* One fluid unit drives the whole hero, so the sizes keep the ratios they
+     have at 1280px (k = 12.8px) and grow with the screen, uncapped */
+  --home-k: max(7px, 0.8vw);
+  --greeting-font-size: calc(var(--home-k) * 1.5625);
+  --name-font-size: calc(var(--home-k) * 6.25);
 
   --navigation-gap: var(--space-2);
   --navigation-link-min-width: 120px;
   --navigation-link-radius: var(--radius-lg);
   --navigation-link-padding-y: var(--space-3);
   --navigation-link-padding-x: var(--space-4);
-  --navigation-link-font-size: 15px;
+  --navigation-link-font-size: max(15px, calc(var(--home-k) * 1.171875));
   --navigation-link-font-weight: 700;
   --navigation-link-active-brightness: 0.98;
   --navigation-link-active-saturation: 0.95;
@@ -33,8 +34,6 @@
   --name-gradient-3: var(--chrome-3);
   --name-gradient-4: var(--chrome-4);
   --name-gradient-5: var(--chrome-5);
-
-  --role-opacity: 0.95;
 
   display: grid;
   place-items: center;
@@ -102,33 +101,14 @@
   color: color-mix(in srgb, var(--foreground) 92%, #000);
 }
 
-:global(:root[data-theme="light"]) .greeting,
-:global(:root[data-theme="light"]) .rolePrefix {
+:global(:root[data-theme="light"]) .greeting {
   color: color-mix(in srgb, var(--foreground) 55%, transparent);
 }
 
 @media (prefers-color-scheme: light) {
-  :global(:root:not([data-theme])) .greeting,
-  :global(:root:not([data-theme])) .rolePrefix {
+  :global(:root:not([data-theme])) .greeting {
     color: color-mix(in srgb, var(--foreground) 55%, transparent);
   }
-}
-
-.rolePrefix {
-  font-size: var(--role-prefix-font-size);
-  font-weight: 400;
-  color: var(--foreground-muted);
-  opacity: 0.8;
-  letter-spacing: 0.04em;
-  margin-top: var(--title-gap-large);
-}
-
-.role {
-  color: var(--foreground-strong);
-  font-weight: 700;
-  font-size: var(--role-font-size);
-  letter-spacing: -0.02em;
-  opacity: var(--role-opacity);
 }
 
 .navigationList {
@@ -169,15 +149,16 @@
 
 @media (--mobile) {
   .home {
-    --greeting-font-size: clamp(21px, 5.5vw, 24px);
-    --name-font-size: clamp(40px, 12vw, 64px);
-    --role-prefix-font-size: clamp(18px, 5vw, 22px);
-    --role-font-size: clamp(30px, 9vw, 42px);
+    --greeting-font-size: clamp(22px, 6.5vw, 28px);
+    --name-font-size: clamp(48px, 15vw, 76px);
     --content-gap: var(--space-6);
   }
 
   .navigationList {
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    width: min(100%, 280px);
+    margin-inline: auto;
   }
 
   .navigationLink {

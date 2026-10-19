@@ -30,14 +30,14 @@ body {
 :root {
   /*
    * Terminal palette, after the Claude Code CLI: black screen, warm off-white
-   * text, dim grey for secondary output, steel grey-blue for prompts, borders
+   * text, dim grey for secondary output, cool grey for prompts, borders
    * and focus. Panels are flat boxes outlined in the dimmed accent.
    * Text pairs meet WCAG AA (>= 4.5:1) on their background.
    */
   --background-light: #faf9f7;
   --foreground-light: #1c1a18;
   --muted-light: #6b655f;
-  --accent-light: #4a5a70;
+  --accent-light: #4b535c;
   --secondary-light: #6b655f;
   --on-accent-light: #ffffff;
   --panel-bg-light: rgba(250, 249, 247, 0.92);
@@ -51,9 +51,9 @@ body {
   --background-dark: #000000;
   --foreground-dark: #e8e6e3;
   --muted-dark: #8b8580;
-  --accent-dark: #8fa3bf;
+  --accent-dark: #7d8894;
   --secondary-dark: #8b8580;
-  --on-accent-dark: #0b0f14;
+  --on-accent-dark: #0d0f11;
   --panel-bg-dark: rgba(10, 10, 10, 0.9);
   --panel-border-dark: color-mix(in srgb, var(--accent-dark) 38%, transparent);
   --shadow-color-dark: 0 0 0;
