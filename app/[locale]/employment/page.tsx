@@ -4,6 +4,7 @@ import { routing } from "@/i18n/routing";
 import { getEmployment } from "@/entities/employment/api";
 import { EmploymentSection } from "@/views/employment/Employment";
 import { siteConfig } from "@/shared/config/site";
+import { localeAlternates } from "@/shared/lib/seo";
 import type { LocalePageProps } from "@/shared/types/page";
 
 export function generateStaticParams() {
@@ -17,14 +18,14 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "employment" });
 
   const title = t("title");
-  const canonical =
-    locale === routing.defaultLocale ? "/employment" : `/${locale}/employment`;
+  const alternates = localeAlternates(locale, "/employment");
+  const canonical = alternates.canonical as string;
 
   return {
     title: { absolute: title },
     description: siteConfig.pages.employment.description,
-    alternates: { canonical },
-    openGraph: { url: canonical, images: [{ url: siteConfig.og.image }] },
+    alternates,
+    openGraph: { url: canonical },
   };
 }
 
@@ -32,7 +33,7 @@ export default async function Employment({ params }: LocalePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const employmentHistory = await getEmployment(locale);
+  const employmentHistory = getEmployment(locale);
 
   return <EmploymentSection employmentHistory={employmentHistory} />;
 }

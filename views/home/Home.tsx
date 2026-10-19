@@ -7,10 +7,10 @@ import {
   type Variants,
 } from "motion/react";
 import { useTranslations } from "next-intl";
-import { BsArrowRight } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { Link } from "@/i18n/navigation";
 import { Section } from "@/shared/ui/Section/Section";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
 import { routes } from "@/shared/config/routes";
 import styles from "./Home.module.css";
 
@@ -96,11 +96,11 @@ export const HomeSection = () => {
         >
           <div className={styles.navigationList}>
             {Object.values(heroLinks).map(({ href, label }) => (
-              <GlassSurface key={href}>
+              <TerminalFrame key={href}>
                 <Link href={href} className={styles.navigationLink}>
-                  <span>{label}</span> <BsArrowRight />
+                  <span>{label}</span> <icons.arrowRight />
                 </Link>
-              </GlassSurface>
+              </TerminalFrame>
             ))}
           </div>
         </motion.div>

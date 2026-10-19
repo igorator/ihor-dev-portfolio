@@ -1,5 +1,3 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
 import type { Technology } from "@/entities/technology/types";

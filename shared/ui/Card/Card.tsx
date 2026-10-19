@@ -6,7 +6,7 @@ type Props = HTMLAttributes<HTMLDivElement>;
 export function Card({ className, children, ...rest }: Props) {
   return (
     <div
-      className={`${styles.card} glass-card${className ? ` ${className}` : ""}`}
+      className={`${styles.card} surface-panel pixel-frame pixel-frame-panel${className ? ` ${className}` : ""}`}
       {...rest}
     >
       {children}

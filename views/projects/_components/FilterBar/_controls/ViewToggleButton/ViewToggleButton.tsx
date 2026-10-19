@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { BsGrid3X3Gap, BsListUl } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { Button } from "@/shared/ui/Button";
 
 type Props = {
@@ -40,9 +40,9 @@ export const ViewToggleButton = ({
           style={{ display: "flex" }}
         >
           {viewMode === "grid" ? (
-            <BsGrid3X3Gap aria-hidden />
+            <icons.viewGrid aria-hidden />
           ) : (
-            <BsListUl aria-hidden />
+            <icons.viewList aria-hidden />
           )}
         </motion.span>
       </AnimatePresence>

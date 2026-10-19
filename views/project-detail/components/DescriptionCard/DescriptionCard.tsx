@@ -1,5 +1,3 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import { Card } from "@/shared/ui/Card";
 import layout from "../../Project.module.css";

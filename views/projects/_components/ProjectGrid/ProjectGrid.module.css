@@ -41,6 +41,13 @@
   }
 }
 
+/* After --tablet, which also matches phones: one column needs more air */
+@media (--mobile) {
+  .projectsWrapper {
+    gap: var(--space-6);
+  }
+}
+
 @media (min-width: 1025px) {
   .projectsWrapper {
     grid-template-columns: repeat(3, 1fr);
@@ -53,12 +60,13 @@
   gap: var(--space-3, 12px);
   padding: var(--space-6, 24px);
   border-radius: var(--radius-lg, 16px);
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.15));
+  clip-path: var(--pixel-corners);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--glass-bg, rgba(10, 12, 16, 0.6)) 80%, transparent)
+    color-mix(in srgb, var(--panel-bg, rgba(24, 24, 27, 0.6)) 80%, transparent)
       0%,
-    color-mix(in srgb, var(--glass-bg, rgba(10, 12, 16, 0.6)) 40%, transparent)
+    color-mix(in srgb, var(--panel-bg, rgba(24, 24, 27, 0.6)) 40%, transparent)
       100%
   );
   backdrop-filter: blur(var(--backdrop-blur)) saturate(140%);
@@ -74,8 +82,9 @@
 
 .metaItem {
   padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.16));
+  border-radius: 0;
+  clip-path: var(--pixel-corners);
+  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.16));
   background: color-mix(
     in srgb,
     var(--chip, rgba(255, 255, 255, 0.06)) 80%,

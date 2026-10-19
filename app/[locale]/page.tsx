@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { HomeSection } from "@/views/home/Home";
 import { siteConfig } from "@/shared/config/site";
+import { localeAlternates } from "@/shared/lib/seo";
 import type { LocalePageProps } from "@/shared/types/page";
 
 export function generateStaticParams() {
@@ -15,22 +16,21 @@ export async function generateMetadata({
   const { locale } = await params;
   await getTranslations({ locale, namespace: "home" });
 
-  const canonical = locale === routing.defaultLocale ? "/" : `/${locale}`;
+  const alternates = localeAlternates(locale, "/");
+  const canonical = alternates.canonical as string;
 
   return {
     title: { absolute: siteConfig.pages.home.title },
     description: siteConfig.pages.home.description,
-    alternates: { canonical },
+    alternates,
     openGraph: {
       url: canonical,
       title: siteConfig.pages.home.title,
       description: siteConfig.pages.home.description,
-      images: [{ url: siteConfig.og.image }],
     },
     twitter: {
       title: siteConfig.pages.home.title,
       description: siteConfig.pages.home.description,
-      images: [siteConfig.og.image],
     },
   };
 }

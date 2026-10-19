@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const TimelineRail = ({ clipPath }: Props) => (
-  <div className={`${styles.track} glass-card`}>
+  <div className={`${styles.track} surface-panel`}>
     <motion.div className={styles.fill} style={{ clipPath }} />
   </div>
 );

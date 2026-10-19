@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Select } from "@/shared/ui/Select";
 import styles from "./SortSelect.module.css";
 
-export type SortKey = "newest" | "oldest" | "az" | "za";
+import type { SortKey } from "../../../../lib/filters";
 
 type Props = {
   value: SortKey;

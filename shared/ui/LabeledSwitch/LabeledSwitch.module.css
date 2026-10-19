@@ -44,9 +44,9 @@
 .skeletonSwitch {
   display: block;
   width: 42px;
-  height: 25px;
+  height: 24px;
   flex-shrink: 0;
-  border-radius: var(--radius-full);
+  clip-path: var(--pixel-corners);
   background: linear-gradient(
     90deg,
     color-mix(in srgb, var(--foreground) 8%, transparent) 0%,

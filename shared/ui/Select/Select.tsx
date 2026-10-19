@@ -1,7 +1,7 @@
 "use client";
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { BsChevronDown } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { useIsMobile } from "@/shared/hooks/useIsMobile";
 import styles from "./Select.module.css";
 
@@ -48,14 +48,14 @@ export function Select<T extends string>({
           <span>{selected?.triggerLabel ?? selected?.name}</span>
         )}
         {!hideChevron && (
-          <BsChevronDown className={styles.chevron} aria-hidden />
+          <icons.chevronDown className={styles.chevron} aria-hidden />
         )}
       </DropdownMenu.Trigger>
 
       {!loading && (
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className={`${styles.content} glass-card`}
+            className={`${styles.content} surface-panel`}
             sideOffset={sideOffset}
             align={contentAlign}
           >

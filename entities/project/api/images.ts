@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { resolveRef, fetchTree, findDir, buildCdnUrl } from "./cdn";
 import type { JsDelivrNode } from "./cdn";
 
@@ -10,13 +9,17 @@ function hasImageExt(name: string): boolean {
   return IMAGE_EXTS.has(name.slice(dot + 1).toLowerCase());
 }
 
-async function fetchProjectImages(slug: string) {
+type ProjectImages = { cover: string | null; screens: string[] };
+
+const NO_IMAGES: ProjectImages = { cover: null, screens: [] };
+
+export async function listProjectImages(slug: string): Promise<ProjectImages> {
   const ref = await resolveRef();
-  const tree = await fetchTree(ref);
+  const tree = await fetchTree(ref).catch(() => null);
+  if (!tree) return NO_IMAGES;
 
   const dir = findDir(tree, ["Projects", slug]);
-  if (!dir?.files)
-    return { cover: null as string | null, screens: [] as string[] };
+  if (!dir?.files) return NO_IMAGES;
 
   const files = dir.files.filter(
     (f): f is JsDelivrNode & { type: "file" } => f.type === "file",
@@ -40,5 +43,3 @@ async function fetchProjectImages(slug: string) {
 
   return { cover, screens };
 }
-
-export const listProjectImages = cache(fetchProjectImages);

@@ -1,83 +1,71 @@
-"use client";
-
-import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import type { ProjectWithTechnologies } from "@/entities/project/types";
+import type { Project } from "@/entities/project/types";
 import { ProjectCard } from "../ProjectCard/ProjectCard";
 import { ProjectsStatsCard } from "../ProjectsStatsCard/ProjectsStatsCard";
+import { GridTransition } from "./GridTransition";
+import type { ViewMode } from "../../lib/filters";
 import styles from "./ProjectGrid.module.css";
 
 type ProjectsGridProps = {
-  projects: ProjectWithTechnologies[];
-  commercialCount?: number;
+  projects: Project[];
+  commercialCount: number;
   personalCount?: number;
-  onTechnologyClick?: (techId: string) => void;
-  viewMode?: "grid" | "list";
-  hasActiveFilters?: boolean;
+  viewMode: ViewMode;
+  showStats: boolean;
+  // Builds the URL that filters the list by a single technology
+  techHref: (techId: string) => string;
 };
 
 export const ProjectsGrid = ({
   projects,
-  commercialCount = 0,
-  personalCount = 0,
-  onTechnologyClick,
-  viewMode = "grid",
-  hasActiveFilters = false,
+  commercialCount,
+  personalCount,
+  viewMode,
+  showStats,
+  techHref,
 }: ProjectsGridProps) => {
   const t = useTranslations("projects");
 
-  const gridKey = viewMode + projects.map((p) => p.slug).join(",");
+  const className = `${styles.projectsWrapper} ${viewMode === "list" ? styles.listView : ""}`;
+
+  if (projects.length === 0) {
+    return (
+      <GridTransition transitionKey="empty" className={className}>
+        <div className={styles.noProjects}>{t("noMatches")}</div>
+      </GridTransition>
+    );
+  }
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={gridKey}
-        className={`${styles.projectsWrapper} ${viewMode === "list" ? styles.listView : ""}`}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 6 }}
-        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {projects.length > 0 ? (
-          <>
-            {viewMode === "grid" && !hasActiveFilters && (
-              <ProjectsStatsCard
-                commercialCount={commercialCount}
-                personalCount={personalCount}
-              />
-            )}
+    <GridTransition
+      transitionKey={viewMode + projects.map((p) => p.slug).join(",")}
+      className={className}
+    >
+      {viewMode === "grid" && showStats && (
+        <ProjectsStatsCard
+          commercialCount={commercialCount}
+          personalCount={personalCount}
+        />
+      )}
 
-            {projects.map((project) => (
-              <ProjectCard
-                key={project.slug}
-                onTechnologyClick={onTechnologyClick}
-                slug={project.slug}
-                title={project.title}
-                description={project.description}
-                type={project.type}
-                date={project.date}
-                category={project.category}
-                cover={project.cover}
-                technologies={project.technologies}
-                githubUrl={project.githubUrl}
-                demoUrl={project.demoUrl}
-                isCommercial={project.isCommercial}
-                isHighlighted={project.isHighlighted}
-                viewMode={viewMode}
-              />
-            ))}
-          </>
-        ) : (
-          <motion.div
-            className={styles.noProjects}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            {t("noMatches")}
-          </motion.div>
-        )}
-      </motion.div>
-    </AnimatePresence>
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.slug}
+          slug={project.slug}
+          title={project.title}
+          description={project.description}
+          type={project.type}
+          date={project.date}
+          category={project.category}
+          cover={project.cover}
+          technologies={project.technologies}
+          githubUrl={project.githubUrl}
+          demoUrl={project.demoUrl}
+          isCommercial={project.isCommercial}
+          techHref={techHref}
+          viewMode={viewMode}
+        />
+      ))}
+    </GridTransition>
   );
 };

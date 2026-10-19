@@ -1,0 +1,14 @@
+.pendingRegion {
+  transition: opacity var(--transition-normal);
+}
+
+.pendingRegion[data-pending] {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pendingRegion {
+    transition: none;
+  }
+}

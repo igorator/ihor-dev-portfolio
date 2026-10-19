@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { MdMenu } from "react-icons/md";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
+import { icons } from "@/shared/config/icons";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
 import { MobileHiddenMenu } from "@/widgets/mobile-hidden-menu/MobileHiddenMenu";
 import styles from "./MobileHiddenMenuButton.module.css";
 
@@ -14,7 +14,7 @@ export const MobileHiddenMenuButton = () => {
   return (
     <>
       <div className={styles.wrapper}>
-        <GlassSurface>
+        <TerminalFrame>
           <button
             type="button"
             className={styles.hiddenMenuButton}
@@ -23,9 +23,9 @@ export const MobileHiddenMenuButton = () => {
             aria-label={t("openMenu")}
             onClick={() => setOpen(true)}
           >
-            <MdMenu size={20} />
+            <icons.menu size={20} />
           </button>
-        </GlassSurface>
+        </TerminalFrame>
       </div>
 
       <MobileHiddenMenu open={open} onClose={() => setOpen(false)} />

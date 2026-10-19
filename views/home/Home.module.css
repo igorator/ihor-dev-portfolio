@@ -1,6 +1,6 @@
 .home {
-  --foreground-strong: var(--foreground, #e5e7eb);
-  --foreground-muted: var(--foreground-50, #9ca3af);
+  --foreground-strong: var(--foreground);
+  --foreground-muted: var(--muted);
 
   --min-height: 72svh;
   --section-padding: clamp(16px, 2vw, 32px);
@@ -14,9 +14,9 @@
   --letter-spacing-tight: -0.03em;
 
   --greeting-font-size: clamp(16px, 1.6vw, 20px);
-  --name-font-size: clamp(52px, 9.5vw, 116px);
+  --name-font-size: clamp(40px, 6.5vw, 80px);
   --role-prefix-font-size: clamp(15px, 1.5vw, 18px);
-  --role-font-size: clamp(38px, 4.8vw, 58px);
+  --role-font-size: clamp(28px, 3.6vw, 44px);
 
   --navigation-gap: var(--space-2);
   --navigation-link-min-width: 120px;
@@ -28,11 +28,11 @@
   --navigation-link-active-brightness: 0.98;
   --navigation-link-active-saturation: 0.95;
 
-  --name-gradient-1: #d9d9d9;
-  --name-gradient-2: #f5f5f5;
-  --name-gradient-3: #bfbfbf;
-  --name-gradient-4: #f0f0f0;
-  --name-gradient-5: #d4d4d4;
+  --name-gradient-1: var(--chrome-1);
+  --name-gradient-2: var(--chrome-2);
+  --name-gradient-3: var(--chrome-3);
+  --name-gradient-4: var(--chrome-4);
+  --name-gradient-5: var(--chrome-5);
 
   --role-opacity: 0.95;
 
@@ -65,11 +65,15 @@
   z-index: 2;
 }
 
+/* Greeting reads as a shell command: "$ hi, i'm" */
+.greeting::before {
+  content: "$ ";
+  color: var(--accent);
+}
+
 .greeting {
   font-weight: 500;
   font-size: var(--greeting-font-size);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
   color: var(--foreground-muted);
   opacity: 0.85;
 }
@@ -94,23 +98,19 @@
 
 :global(:root[data-theme="light"]) .name {
   background: none;
-  -webkit-text-fill-color: color-mix(
-    in srgb,
-    var(--foreground, #1f2937) 92%,
-    #000
-  );
-  color: color-mix(in srgb, var(--foreground, #1f2937) 92%, #000);
+  -webkit-text-fill-color: color-mix(in srgb, var(--foreground) 92%, #000);
+  color: color-mix(in srgb, var(--foreground) 92%, #000);
 }
 
 :global(:root[data-theme="light"]) .greeting,
 :global(:root[data-theme="light"]) .rolePrefix {
-  color: color-mix(in srgb, var(--foreground, #1f2937) 55%, transparent);
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
 }
 
 @media (prefers-color-scheme: light) {
   :global(:root:not([data-theme])) .greeting,
   :global(:root:not([data-theme])) .rolePrefix {
-    color: color-mix(in srgb, var(--foreground, #1f2937) 55%, transparent);
+    color: color-mix(in srgb, var(--foreground) 55%, transparent);
   }
 }
 
@@ -153,7 +153,7 @@
   font-weight: var(--navigation-link-font-weight);
   font-size: var(--navigation-link-font-size);
   line-height: 1;
-  color: var(--foreground, #111);
+  color: var(--foreground);
   text-decoration: none;
   transition:
     transform var(--transition-fast),
@@ -170,9 +170,9 @@
 @media (--mobile) {
   .home {
     --greeting-font-size: clamp(21px, 5.5vw, 24px);
-    --name-font-size: clamp(74px, 20vw, 110px);
+    --name-font-size: clamp(40px, 12vw, 64px);
     --role-prefix-font-size: clamp(18px, 5vw, 22px);
-    --role-font-size: clamp(48px, 14vw, 62px);
+    --role-font-size: clamp(30px, 9vw, 42px);
     --content-gap: var(--space-6);
   }
 

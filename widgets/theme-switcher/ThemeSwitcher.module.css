@@ -4,7 +4,6 @@
   justify-content: center;
   gap: var(--space-1);
   padding: var(--space-3);
-  border-radius: var(--full-radius);
 }
 
 .themeIcon {

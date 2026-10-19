@@ -2,20 +2,21 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import projectBase from "@/entities/project/data/project_base.json";
-import { getProjectBySlug } from "@/entities/project/api";
+import { getProjectBySlug, getProjectSlugs } from "@/entities/project/api";
 import { ProjectSection } from "@/views/project-detail/Project";
 import { siteConfig } from "@/shared/config/site";
+import { localeAlternates } from "@/shared/lib/seo";
 import type { SlugPageProps } from "@/shared/types/page";
 
 export function generateStaticParams() {
-  const bases = projectBase as Array<{ slug: string }>;
   return routing.locales.flatMap((locale) =>
-    bases.map((p) => ({ locale, slug: p.slug })),
+    getProjectSlugs().map((slug) => ({ locale, slug })),
   );
 }
 
-export const revalidate = 60;
+// Prerendered at build (SSG); re-generated in the background at most every
+// 5 minutes so new covers/screens from the assets repo show up (ISR)
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -30,27 +31,21 @@ export async function generateMetadata({
   const title = project.title || slug;
   const description =
     project.description || siteConfig.pages.project.fallbackDescription;
-  const canonical =
-    locale === routing.defaultLocale
-      ? `/projects/${slug}`
-      : `/${locale}/projects/${slug}`;
+  const alternates = localeAlternates(locale, `/projects/${slug}`);
+  const canonical = alternates.canonical as string;
 
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical },
+    alternates,
     openGraph: {
       url: canonical,
       title,
       description,
-      images: project.cover
-        ? [{ url: project.cover, alt: title }]
-        : [{ url: siteConfig.og.image }],
     },
     twitter: {
       title,
       description,
-      images: project.cover ? [project.cover] : [siteConfig.og.image],
     },
   };
 }

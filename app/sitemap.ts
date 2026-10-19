@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import projectBase from "@/entities/project/data/project_base.json";
+import { projects } from "@/entities/project/data/projects";
+import { getProjectSlugs } from "@/entities/project/api";
 import { siteConfig } from "@/shared/config/site";
+import { localePath } from "@/shared/lib/seo";
 
 type StaticRoute = {
   path: string;
@@ -15,18 +17,10 @@ const STATIC_ROUTES: StaticRoute[] = [
   { path: "/employment", changeFrequency: "monthly", priority: 0.7 },
 ];
 
-const projectEntries = (
-  projectBase as Array<{ slug: string; date?: string }>
-).map((project) => ({
-  slug: project.slug,
-  lastModified: project.date ? new Date(`${project.date}-01`) : undefined,
+const projectEntries = getProjectSlugs().map((slug) => ({
+  slug,
+  lastModified: new Date(`${projects[slug].date}-01`),
 }));
-
-const localePath = (locale: string, path: string) => {
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (locale === routing.defaultLocale) return normalized;
-  return normalized === "/" ? `/${locale}` : `/${locale}${normalized}`;
-};
 
 function alternatesForPath(path: string) {
   return {

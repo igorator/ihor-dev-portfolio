@@ -6,11 +6,11 @@ import {
   useReducedMotion,
   type Variants,
 } from "motion/react";
-import { BsArrowRight, BsArrowCounterclockwise } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Section } from "@/shared/ui/Section/Section";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
 import { routes } from "@/shared/config/routes";
 import styles from "./ErrorSection.module.css";
 
@@ -78,22 +78,22 @@ export const ErrorSection = ({ reset }: Props) => {
         </motion.p>
 
         <motion.div className={styles.actions} variants={btnWrap}>
-          <GlassSurface
+          <TerminalFrame
             style={{ "--gs-radius": "var(--radius-lg)" } as React.CSSProperties}
           >
             <button onClick={reset} className={styles.btn}>
               <span>{t("tryAgain")}</span>
-              <BsArrowCounterclockwise />
+              <icons.retry />
             </button>
-          </GlassSurface>
-          <GlassSurface
+          </TerminalFrame>
+          <TerminalFrame
             style={{ "--gs-radius": "var(--radius-lg)" } as React.CSSProperties}
           >
             <Link href={routes.root.path} className={styles.btn}>
               <span>{t("backHome")}</span>
-              <BsArrowRight />
+              <icons.arrowRight />
             </Link>
-          </GlassSurface>
+          </TerminalFrame>
         </motion.div>
       </motion.div>
     </Section>

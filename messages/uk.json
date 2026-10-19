@@ -104,6 +104,8 @@
   "employment": {
     "title": "Досвід роботи",
     "linkedProjects": "Пов'язані проєкти",
+    "website": "Сайт",
+    "websiteAria": "Сайт {company} (відкриється в новій вкладці)",
     "present": "Донині"
   },
 

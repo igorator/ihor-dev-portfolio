@@ -55,7 +55,9 @@ export const EmploymentSection = ({
 
   return (
     <Section className={styles.employment}>
-      <h2 className={styles.title}>{t("employment.title")}</h2>
+      <h2 className={`prompt-title ${styles.title}`}>
+        {t("employment.title")}
+      </h2>
 
       <div className={styles.timelineWrapper} ref={timelineRef}>
         <TimelineRail clipPath={railClip} />
@@ -84,6 +86,7 @@ export const EmploymentSection = ({
               />
               <EmploymentCard
                 company={itemData.company}
+                url={itemData.url}
                 type={itemData.type}
                 category={itemData.category}
                 position={itemData.position}

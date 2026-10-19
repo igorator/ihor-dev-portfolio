@@ -1,14 +1,13 @@
-"use client";
-
 import Image from "next/image";
 import { useFormatter, useTranslations } from "next-intl";
-import { BsBoxArrowUpRight, BsGithub, BsGlobe2 } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { Link } from "@/i18n/navigation";
 import { Card } from "@/shared/ui/Card";
 import type { GithubUrlValue } from "@/entities/project/types";
 import { normalizeGithubLinks } from "@/entities/project/lib/normalizeGithubLinks";
 import { FadeMask } from "@/shared/ui/FadeMask";
 import { ProjectCardTooltip } from "./ProjectCardTooltip/ProjectCardTooltip";
+import { asciiField } from "../../lib/asciiField";
 import styles from "./ProjectCard.module.css";
 
 export type ProjectCardProps = {
@@ -29,9 +28,12 @@ export type ProjectCardProps = {
   demoUrl?: string | null;
   isCommercial?: boolean;
   isHighlighted?: boolean;
-  onTechnologyClick?: (techId: string) => void;
+  // URL that filters the list by this technology (keeps other filters)
+  techHref: (techId: string) => string;
   viewMode?: "grid" | "list";
 };
+
+// Server Component: only the commercial tooltip below is interactive
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   slug,
@@ -45,7 +47,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   githubUrl,
   demoUrl,
   isCommercial,
-  onTechnologyClick,
+  techHref,
   viewMode = "grid",
 }) => {
   const t = useTranslations();
@@ -95,6 +97,14 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           <div
             className={`${styles.coverWrapper}${!cover ? ` ${styles.coverPlaceholder}` : ""}`}
           >
+            {!cover && (
+              <>
+                <pre className={styles.asciiField} aria-hidden="true">
+                  {asciiField(title)}
+                </pre>
+                <span className={styles.placeholderTitle}>{title}</span>
+              </>
+            )}
             {cover && (
               <Image
                 src={cover}
@@ -136,8 +146,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               {technologies
                 .slice(0, viewMode === "list" ? 4 : 6)
                 .map((tech) => (
-                  <button
+                  <Link
                     key={tech.id}
+                    href={techHref(tech.id)}
+                    replace
                     className={styles.tech}
                     style={
                       {
@@ -148,12 +160,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                           : `color-mix(in srgb, ${tech.color} 12%, transparent)`,
                       } as React.CSSProperties
                     }
-                    onClick={() => onTechnologyClick?.(tech.id)}
-                    type="button"
                     title={tech.name}
                   >
                     {tech.name}
-                  </button>
+                  </Link>
                 ))}
               {(() => {
                 const limit = viewMode === "list" ? 4 : 6;
@@ -173,7 +183,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               ? [
                   {
                     href: demoUrl,
-                    Icon: BsGlobe2,
+                    Icon: icons.website,
                     label: t("projects.card.liveDemo", {
                       default: "Live Demo",
                     }),
@@ -182,7 +192,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               : []),
             ...githubLinks.map((gl) => ({
               href: gl.url,
-              Icon: BsGithub,
+              Icon: icons.github,
               label:
                 gl.label ?? t("projects.card.github", { default: "GitHub" }),
             })),
@@ -208,7 +218,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           title={t("projects.card.viewAria", { title })}
           className={styles.arrowLink}
         >
-          <BsBoxArrowUpRight size={18} aria-hidden="true" />
+          <icons.external size={18} aria-hidden="true" />
         </Link>
       </div>
     </Card>

@@ -1,41 +1,22 @@
-import { cache } from "react";
 import type { Locale } from "next-intl";
-import technologyBase from "@/entities/technology/data/technology_base.json";
-import technologiesEn from "@/entities/technology/data/technologies_en.json";
-import technologiesUk from "@/entities/technology/data/technologies_uk.json";
+import { technologies } from "@/entities/technology/data/technologies";
+import { technologiesI18n } from "@/entities/technology/data/i18n";
 import type { Technology } from "@/entities/technology/types";
-import { resolveLocale } from "@/shared/server/locale";
 
-type TechnologyI18n = { name: string; category: string };
-type TechnologyBase = {
-  id: string;
-  color: string;
-  textColor?: string;
-  priority: number;
-};
+// Local data only: no I/O, so nothing to cache
+export function getTechnologies(locale: Locale): Technology[] {
+  const i18n = technologiesI18n[locale];
 
-const I18N_BY_LOCALE: Record<string, Record<string, TechnologyI18n>> = {
-  en: technologiesEn,
-  uk: technologiesUk,
-};
-
-export function buildTechnologies(locale: string): Technology[] {
-  const safeLocale = resolveLocale(locale);
-  const i18n = I18N_BY_LOCALE[safeLocale] as Record<string, TechnologyI18n>;
-  const bases = technologyBase as TechnologyBase[];
-
-  return bases
-    .map((base) => ({
+  return Object.entries(technologies)
+    .map(([id, base]) => ({
+      id,
       ...base,
-      name: i18n[base.id]?.name ?? base.id,
-      category: i18n[base.id]?.category ?? "",
+      ...i18n[id as keyof typeof i18n],
     }))
     .toSorted((a, b) => {
       if (a.category !== b.category) {
-        return a.category.localeCompare(b.category, safeLocale);
+        return a.category.localeCompare(b.category, locale);
       }
       return a.priority - b.priority;
     });
 }
-
-export const getTechnologies = cache(buildTechnologies);

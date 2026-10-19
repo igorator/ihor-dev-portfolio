@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { Switch } from "@/shared/ui/Switch";
 import styles from "./LabeledSwitch.module.css";
 
@@ -18,6 +19,8 @@ export function LabeledSwitch({
   disabled = false,
   loading = false,
 }: Props) {
+  const id = useId();
+
   return (
     <div
       className={`${styles.row} ${loading ? styles.loading : disabled ? styles.disabled : ""}`}
@@ -29,8 +32,15 @@ export function LabeledSwitch({
         </>
       ) : (
         <>
-          <span className={styles.label}>{label}</span>
-          <Switch checked={checked} onChange={onChange} disabled={disabled} />
+          <label htmlFor={id} className={styles.label}>
+            {label}
+          </label>
+          <Switch
+            id={id}
+            checked={checked}
+            onChange={onChange}
+            disabled={disabled}
+          />
         </>
       )}
     </div>

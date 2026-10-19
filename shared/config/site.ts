@@ -1,7 +1,9 @@
+// Vercel sets these automatically; localhost is the local dev fallback
+const host =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
 export const siteConfig = {
-  url:
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-    "https://igorator.site",
+  url: host ? `https://${host}` : "http://localhost:3000",
   name: "Ihor Kliushnyk",
   author: "Ihor Kliushnyk",
   description:
@@ -43,6 +45,7 @@ export const siteConfig = {
   og: {
     brand: "Ihor Kliushnyk",
     subtitle: "Developer",
-    image: "/opengraph-image.png",
+    // Keep in sync with --accent-dark in app/globals.css
+    accent: "#8fa3bf",
   },
 } as const;

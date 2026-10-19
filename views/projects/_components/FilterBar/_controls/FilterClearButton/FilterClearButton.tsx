@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MdFilterAltOff } from "react-icons/md";
+import { icons } from "@/shared/config/icons";
 import { Button } from "@/shared/ui/Button";
 
 type Props = {
@@ -19,7 +19,7 @@ export const FilterClearButton = ({
 
   return (
     <Button onClick={onClear} disabled={disabled} loading={loading}>
-      <MdFilterAltOff aria-hidden />
+      <icons.clearFilters aria-hidden />
       {t("projects.filters.clear", { default: "Clear filters" })}
     </Button>
   );

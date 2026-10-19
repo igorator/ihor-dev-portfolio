@@ -1,7 +1,7 @@
 import { LanguageSelect } from "@/widgets/language-select/LanguageSelect";
 import { NavbarLinks } from "@/widgets/navbar/NavbarLinks/NavbarLinks";
 import { ThemeSwitch } from "@/widgets/theme-switcher/ThemeSwitcher";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
 import { Socials } from "@/widgets/socials/Socials";
 import { ScrollToTop } from "@/widgets/scroll-to-top/ScrollToTop";
 import styles from "./Navbar.module.css";
@@ -9,21 +9,21 @@ import styles from "./Navbar.module.css";
 export const Navbar = () => {
   return (
     <nav className={styles.navbar}>
-      <GlassSurface className={styles.socialsWrapper} overflowVisible>
+      <TerminalFrame className={styles.socialsWrapper} overflowVisible>
         <Socials />
-      </GlassSurface>
+      </TerminalFrame>
 
-      <GlassSurface className={styles.navbarLinksWrapper} overflowVisible>
+      <TerminalFrame className={styles.navbarLinksWrapper} overflowVisible>
         <NavbarLinks />
-      </GlassSurface>
+      </TerminalFrame>
 
-      <GlassSurface className={styles.themeSwitcherWrapper}>
+      <TerminalFrame className={styles.themeSwitcherWrapper}>
         <ThemeSwitch />
-      </GlassSurface>
+      </TerminalFrame>
 
-      <GlassSurface className={styles.languageSelectWrapper}>
+      <TerminalFrame className={styles.languageSelectWrapper}>
         <LanguageSelect triggerClassName={styles.langTrigger} />
-      </GlassSurface>
+      </TerminalFrame>
 
       <ScrollToTop variant="inline" className={styles.scrollToTopWrapper} />
     </nav>

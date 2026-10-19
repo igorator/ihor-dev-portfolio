@@ -1,4 +1,5 @@
 import type { Technology } from "@/entities/technology/types";
+import type { TechnologyId } from "@/entities/technology/data/technologies";
 
 export type GithubLink = {
   url: string;
@@ -6,22 +7,12 @@ export type GithubLink = {
 };
 
 export type GithubUrlValue =
-  | string
-  | GithubLink
-  | (string | GithubLink)[]
-  | null;
+  string | GithubLink | (string | GithubLink)[] | null;
 
-export type Project = {
-  slug: string;
-  title: string;
+// Locale-independent data, keyed by slug in data/projects.ts
+export type ProjectBase = {
   date: string;
-  description: string;
-  type: string;
-  category: string;
-  technologiesIds: string[];
-  cover?: string;
-  screens?: string[];
-  video?: string;
+  technologiesIds: TechnologyId[];
   githubUrl?: GithubUrlValue;
   demoUrl?: string | null;
   isCommercial?: boolean;
@@ -29,6 +20,24 @@ export type Project = {
   isHidden?: boolean;
 };
 
-export type ProjectWithTechnologies = Omit<Project, "technologiesIds"> & {
-  technologies: Technology[];
+// Per-locale fields, see data/i18n
+export type ProjectI18n = {
+  title: string;
+  description: string;
+  type: string;
+  category: string;
 };
+
+export type Project = Omit<ProjectBase, "technologiesIds"> &
+  ProjectI18n & {
+    slug: string;
+    technologies: Technology[];
+    cover?: string;
+  };
+
+export type ProjectDetail = Project & {
+  screens: string[];
+  video?: string;
+};
+
+export type ProjectSummary = Pick<Project, "slug" | "title">;

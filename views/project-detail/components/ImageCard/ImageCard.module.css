@@ -70,16 +70,15 @@
   gap: 6px;
   z-index: 2;
   padding: 6px 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--background) 70%, transparent);
-  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  background: var(--panel-bg);
+  border: 1px solid var(--frame-border);
+  clip-path: var(--pixel-corners);
   backdrop-filter: blur(var(--backdrop-blur)) saturate(140%);
 }
 
 .indicator {
   width: 8px;
   height: 8px;
-  border-radius: 999px;
   background: color-mix(in srgb, var(--foreground) 22%, transparent);
   border: 1px solid color-mix(in srgb, var(--foreground) 35%, transparent);
   transition:

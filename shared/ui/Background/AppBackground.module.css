@@ -4,20 +4,3 @@
   z-index: -1;
   pointer-events: none;
 }
-
-.loader {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--background);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.8s ease;
-}
-
-.loader[data-ready] {
-  opacity: 0;
-}

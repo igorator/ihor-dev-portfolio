@@ -7,79 +7,75 @@ import { TechnologyMultiSelect } from "./_controls/TechnologyMultiSelect/Technol
 import { SortSelect } from "./_controls/SortSelect/SortSelect";
 import { CommercialSwitch } from "./_controls/CommercialSwitch/CommercialSwitch";
 import { FilterClearButton } from "./_controls/FilterClearButton/FilterClearButton";
-import type { SortKey } from "../../_hooks/useProjectFilters";
+import { DEFAULT_FILTERS, hasActiveFilters } from "../../lib/filters";
+import { useProjectsQuery } from "../ProjectsQuery/ProjectsQuery";
 import styles from "./FilterBar.module.css";
 
 interface FilterBarProps {
-  availableTechnologies: Technology[];
+  // Only technologies used by visible projects, computed on the server
   technologies: Technology[];
-  selectedTechs: string[];
-  onToggleTech: (tech: string) => void;
-  sortBy: SortKey;
-  onSortChange: (sort: SortKey) => void;
-  commercialOnly: boolean;
-  onCommercialChange: (value: boolean) => void;
-  onClearAll: () => void;
-  hasActiveFilters: boolean;
+  showCommercialSwitch?: boolean;
 }
 
 export const FilterBar = ({
-  availableTechnologies,
   technologies,
-  selectedTechs,
-  onToggleTech,
-  sortBy,
-  onSortChange,
-  commercialOnly,
-  onCommercialChange,
-  onClearAll,
-  hasActiveFilters,
+  showCommercialSwitch = true,
 }: FilterBarProps) => {
-  const techs =
-    availableTechnologies.length > 0 ? availableTechnologies : technologies;
-  const loading = techs.length === 0;
+  const { filters, update } = useProjectsQuery();
+  const { techs, sort, commercialOnly } = filters;
+
+  const toggleTech = (id: string) =>
+    update({
+      techs: techs.includes(id)
+        ? techs.filter((techId) => techId !== id)
+        : [...techs, id],
+    });
+
+  // Resets filters but keeps the chosen view
+  const clearAll = () => update({ ...DEFAULT_FILTERS, view: filters.view });
+
+  const isActive = hasActiveFilters(filters);
 
   return (
-    <Card className={styles.filtersBar} aria-busy={loading}>
+    <Card className={styles.filtersBar}>
       <InputWrapper
         className={styles.technologySelectWrapper}
-        data-active={selectedTechs.length > 0 || undefined}
+        data-active={techs.length > 0 || undefined}
       >
         <TechnologyMultiSelect
-          technologies={techs}
-          selectedTechnologies={selectedTechs}
-          onToggle={onToggleTech}
-          loading={loading}
+          technologies={technologies}
+          selectedTechnologies={techs}
+          onToggle={toggleTech}
         />
       </InputWrapper>
 
       <InputWrapper
         className={styles.sortSelectWrapper}
-        data-active={sortBy !== "newest" || undefined}
+        data-active={sort !== DEFAULT_FILTERS.sort || undefined}
       >
-        <SortSelect value={sortBy} onChange={onSortChange} loading={loading} />
-      </InputWrapper>
-
-      <InputWrapper
-        className={styles.commercialSwitchWrapper}
-        data-active={!commercialOnly || undefined}
-      >
-        <CommercialSwitch
-          value={commercialOnly}
-          onChange={onCommercialChange}
-          loading={loading}
+        <SortSelect
+          value={sort}
+          onChange={(value) => update({ sort: value })}
         />
       </InputWrapper>
+
+      {showCommercialSwitch && (
+        <InputWrapper
+          className={styles.commercialSwitchWrapper}
+          data-active={!commercialOnly || undefined}
+        >
+          <CommercialSwitch
+            value={commercialOnly}
+            onChange={(value) => update({ commercialOnly: value })}
+          />
+        </InputWrapper>
+      )}
 
       <InputWrapper
         className={styles.filterClearButtonWrapper}
-        data-active={hasActiveFilters || undefined}
+        data-active={isActive || undefined}
       >
-        <FilterClearButton
-          onClear={onClearAll}
-          disabled={!hasActiveFilters}
-          loading={loading}
-        />
+        <FilterClearButton onClear={clearAll} disabled={!isActive} />
       </InputWrapper>
     </Card>
   );

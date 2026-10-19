@@ -6,8 +6,8 @@ export function normalizeGithubLinks(
   if (!githubUrl) return [];
   const items = Array.isArray(githubUrl) ? githubUrl : [githubUrl];
   return items
-    .map(
-      (item): GithubLink => (typeof item === "string" ? { url: item } : item),
+    .map((item): GithubLink =>
+      typeof item === "string" ? { url: item } : item,
     )
     .filter(({ url }) => Boolean(url));
 }

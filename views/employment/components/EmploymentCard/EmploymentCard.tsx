@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { BsFolder2 } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import type { Employment } from "@/entities/employment/types";
 import { Card } from "@/shared/ui/Card";
 import styles from "./EmploymentCard.module.css";
@@ -9,6 +9,7 @@ type LinkedProject = NonNullable<Employment["linkedProjects"]>[number];
 
 type EmploymentCardProps = {
   company: string;
+  url?: string;
   type: string;
   category?: string;
   position?: string;
@@ -19,6 +20,7 @@ type EmploymentCardProps = {
 
 export const EmploymentCard = ({
   company,
+  url,
   type,
   category,
   position,
@@ -35,6 +37,21 @@ export const EmploymentCard = ({
         <div className={styles.badgesGroup}>
           <span className={styles.typeBadge}>{type}</span>
           {category && <span className={styles.categoryBadge}>{category}</span>}
+          {url && (
+            <a
+              className={styles.projectBadge}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("employment.websiteAria", { company })}
+            >
+              <icons.external
+                className={styles.projectBadgeIcon}
+                aria-hidden="true"
+              />
+              <span>{t("employment.website")}</span>
+            </a>
+          )}
         </div>
         {position && <span className={styles.position}>{position}</span>}
       </header>
@@ -61,7 +78,7 @@ export const EmploymentCard = ({
                   className={styles.projectBadge}
                   href={`/projects/${linkedProject.slug}`}
                 >
-                  <BsFolder2
+                  <icons.projects
                     className={styles.projectBadgeIcon}
                     aria-hidden="true"
                   />

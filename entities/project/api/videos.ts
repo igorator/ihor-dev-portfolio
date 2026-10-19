@@ -1,11 +1,11 @@
-import { cache } from "react";
 import { resolveRef, fetchTree, findDir, buildCdnUrl } from "./cdn";
 
 const VIDEO_NAMES = ["video.mp4", "video.webm"];
 
-async function fetchProjectVideo(slug: string): Promise<string | null> {
+export async function listProjectVideo(slug: string): Promise<string | null> {
   const ref = await resolveRef();
-  const tree = await fetchTree(ref);
+  const tree = await fetchTree(ref).catch(() => null);
+  if (!tree) return null;
 
   const dir = findDir(tree, ["Projects", slug]);
   if (!dir?.files) return null;
@@ -19,5 +19,3 @@ async function fetchProjectVideo(slug: string): Promise<string | null> {
 
   return null;
 }
-
-export const listProjectVideo = cache(fetchProjectVideo);

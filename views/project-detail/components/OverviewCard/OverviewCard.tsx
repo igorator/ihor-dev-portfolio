@@ -1,5 +1,3 @@
-"use client";
-
 import { useFormatter, useTranslations } from "next-intl";
 import { Card } from "@/shared/ui/Card";
 import layout from "../../Project.module.css";
@@ -26,7 +24,7 @@ export function OverviewCard({ title, type, category, date }: Props) {
 
   return (
     <Card className={layout.overviewCard}>
-      <h1 className={styles.projectTitle}>{title}</h1>
+      <h1 className={`prompt-title ${styles.projectTitle}`}>{title}</h1>
       <ul className={styles.metaList}>
         <li className={styles.metaItem}>
           <span className={styles.metaLabel}>{t("type")}</span>

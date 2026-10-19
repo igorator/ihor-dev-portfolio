@@ -43,7 +43,8 @@
   flex: 1;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--panel-border);
+  clip-path: var(--pixel-corners);
   background: color-mix(in oklab, var(--foreground) 4%, transparent);
 }
 
@@ -108,8 +109,9 @@
 
 .metaItem {
   padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.16));
+  border-radius: 0;
+  clip-path: var(--pixel-corners);
+  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.16));
   background: color-mix(
     in srgb,
     var(--chip, rgba(255, 255, 255, 0.06)) 80%,

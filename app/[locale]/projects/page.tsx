@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { routing } from "@/i18n/routing";
 import { getProjects } from "@/entities/project/api";
 import { getTechnologies } from "@/entities/technology/api";
 import { ProjectsSection } from "@/views/projects/Projects";
-import { PageLoading } from "@/shared/loading";
+import { parseFilters } from "@/views/projects/lib/filters";
+import { getProjectsConfig } from "@/shared/config/projects";
 import { siteConfig } from "@/shared/config/site";
+import { localeAlternates } from "@/shared/lib/seo";
 import type { LocalePageProps } from "@/shared/types/page";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+type ProjectsPageProps = {
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 export async function generateMetadata({
   params,
@@ -20,29 +22,37 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "projects" });
 
   const title = t("title");
-  const canonical =
-    locale === routing.defaultLocale ? "/projects" : `/${locale}/projects`;
+  const alternates = localeAlternates(locale, "/projects");
+  const canonical = alternates.canonical as string;
 
   return {
     title: { absolute: title },
     description: siteConfig.pages.projects.description,
-    alternates: { canonical },
-    openGraph: { url: canonical, images: [{ url: siteConfig.og.image }] },
+    alternates,
+    openGraph: { url: canonical },
   };
 }
 
-export default async function Projects({ params }: LocalePageProps) {
-  const { locale } = await params;
+// Rendered per request (SSR): reading searchParams makes the route dynamic,
+// so the filtered list is server-rendered for every filter combination
+export default async function Projects({
+  params,
+  searchParams,
+}: ProjectsPageProps) {
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
 
-  const [projects, technologies] = await Promise.all([
+  const [projects, config] = await Promise.all([
     getProjects(locale),
-    getTechnologies(locale),
+    getProjectsConfig(),
   ]);
 
   return (
-    <Suspense fallback={<PageLoading />}>
-      <ProjectsSection projects={projects} technologies={technologies} />
-    </Suspense>
+    <ProjectsSection
+      projects={projects}
+      technologies={getTechnologies(locale)}
+      filters={parseFilters(query)}
+      commercialOnlyMode={config.commercialOnly}
+    />
   );
 }

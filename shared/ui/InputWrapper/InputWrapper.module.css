@@ -3,6 +3,7 @@
   align-items: stretch;
   border-radius: var(--radius-md);
   border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  clip-path: var(--pixel-corners);
   background: color-mix(in srgb, var(--foreground) 2%, transparent);
   transition:
     border-color var(--transition-fast),

@@ -1,5 +1,4 @@
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-import { MdClose } from "react-icons/md";
+import { icons } from "@/shared/config/icons";
 import styles from "./NavButton.module.css";
 
 type NavButtonVariant = "previous" | "next" | "close";
@@ -12,10 +11,10 @@ type Props = {
   className?: string;
 };
 
-const icons = {
-  previous: BsArrowLeft,
-  next: BsArrowRight,
-  close: MdClose,
+const variantIcons = {
+  previous: icons.arrowLeft,
+  next: icons.arrowRight,
+  close: icons.close,
 };
 
 export const NavButton = ({
@@ -25,7 +24,7 @@ export const NavButton = ({
   onPointerDown,
   className,
 }: Props) => {
-  const Icon = icons[variant];
+  const Icon = variantIcons[variant];
   return (
     <button
       type="button"

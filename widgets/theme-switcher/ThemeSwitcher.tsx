@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { BsMoon, BsSun } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { useTheme } from "@/shared/hooks/useTheme";
 import { Switch } from "@/shared/ui/Switch";
 import styles from "./ThemeSwitcher.module.css";
@@ -34,13 +34,13 @@ export const ThemeSwitch = () => {
 
   return (
     <div className={styles.themeSwitch}>
-      <BsMoon className={styles.themeIcon} aria-hidden="true" />
+      <icons.moon className={styles.themeIcon} aria-hidden="true" />
       <Switch
         checked={effective === "light"}
         onChange={handleThemeToggle}
         ariaLabel={t("toggleTheme")}
       />
-      <BsSun className={styles.themeIcon} aria-hidden="true" />
+      <icons.sun className={styles.themeIcon} aria-hidden="true" />
     </div>
   );
 };

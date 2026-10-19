@@ -7,12 +7,19 @@
   border-radius: 50%;
   background: var(--foreground);
   color: var(--background);
-  cursor: pointer;
+  cursor: default;
 }
 
 .commercialBadge:hover {
   background: var(--accent);
-  color: white;
+  color: var(--on-accent);
+}
+
+/* Tap target on touch screens */
+@media (hover: none) {
+  .commercialBadge {
+    cursor: pointer;
+  }
 }
 
 .tooltipContent {
@@ -27,7 +34,7 @@
 }
 
 .tooltipArrow {
-  fill: color-mix(in srgb, var(--glass-bg) 85%, var(--accent) 10%);
+  fill: color-mix(in srgb, var(--panel-bg) 85%, var(--accent) 10%);
 }
 
 @keyframes fadeIn {

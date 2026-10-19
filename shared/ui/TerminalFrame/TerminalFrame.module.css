@@ -1,0 +1,16 @@
+/* Border and corners come from .pixel-frame / .pixel-frame-layer in app/globals.css */
+.frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel-bg);
+  backdrop-filter: blur(var(--backdrop-blur));
+}
+
+/* Frame and background are drawn on the clipped ::before layer instead */
+.overflowVisible {
+  overflow: visible;
+  background: none;
+  backdrop-filter: none;
+}

@@ -1,103 +1,90 @@
 import { cache } from "react";
 import type { Locale } from "next-intl";
 
-import projectBase from "@/entities/project/data/project_base.json";
-import projectsEn from "@/entities/project/data/projects_en.json";
-import projectsUk from "@/entities/project/data/projects_uk.json";
-import { buildTechnologies } from "@/entities/technology/api";
+import { projects, type ProjectSlug } from "@/entities/project/data/projects";
+import { projectsI18n } from "@/entities/project/data/i18n";
+import { getTechnologies } from "@/entities/technology/api";
+import type { Technology } from "@/entities/technology/types";
+import type {
+  Project,
+  ProjectDetail,
+  ProjectSummary,
+} from "@/entities/project/types";
 
 import { listProjectImages } from "./images";
 import { listProjectVideo } from "./videos";
-import type {
-  Project,
-  ProjectWithTechnologies,
-} from "@/entities/project/types";
-import { mergeProjectsWithTechnologies } from "./mergeProjectsWithTechnologies";
-import { resolveLocale } from "@/shared/server/locale";
 
-type ProjectI18n = Pick<Project, "title" | "description" | "type" | "category">;
+const isProjectSlug = (slug: string): slug is ProjectSlug => slug in projects;
 
-const I18N_BY_LOCALE: Record<Locale, Record<string, ProjectI18n>> = {
-  en: projectsEn as Record<string, ProjectI18n>,
-  uk: projectsUk as Record<string, ProjectI18n>,
-};
+const visibleSlugs = (): ProjectSlug[] =>
+  (Object.keys(projects) as ProjectSlug[]).filter(
+    (slug) => !projects[slug].isHidden,
+  );
 
+// Merges base data, translations and technologies; no network
 function buildProject(
-  base: Omit<Project, "title" | "description" | "type" | "category">,
-  i18n: Record<string, ProjectI18n>,
+  slug: ProjectSlug,
+  locale: Locale,
+  technologies: Map<string, Technology>,
 ): Project {
-  const i18nEntry = i18n[base.slug];
+  const { technologiesIds, ...base } = projects[slug];
+
   return {
+    slug,
     ...base,
-    title: i18nEntry?.title ?? base.slug,
-    description: i18nEntry?.description ?? "",
-    type: i18nEntry?.type ?? "",
-    category: i18nEntry?.category ?? "",
+    ...projectsI18n[locale][slug],
+    technologies: technologiesIds
+      .map((id) => technologies.get(id))
+      .filter((tech): tech is Technology => tech !== undefined)
+      .toSorted((a, b) => a.priority - b.priority),
   };
 }
 
-async function fetchProjects(
-  locale: Locale,
-): Promise<ProjectWithTechnologies[]> {
-  const safeLocale = resolveLocale(locale);
-  const technologies = buildTechnologies(safeLocale);
-  const i18n = I18N_BY_LOCALE[safeLocale] as Record<string, ProjectI18n>;
+const technologyMap = (locale: Locale) =>
+  new Map(getTechnologies(locale).map((tech) => [tech.id, tech]));
 
-  const bases = projectBase as Array<
-    Omit<Project, "title" | "description" | "type" | "category">
-  >;
+export const getProjectSlugs = (): ProjectSlug[] => visibleSlugs();
 
-  const merged = bases
-    .map((base) => buildProject(base, i18n))
-    .filter((p) => !p.isHidden)
-    .toSorted((a, b) => b.date.localeCompare(a.date));
-
-  const withTech = mergeProjectsWithTechnologies(merged, technologies);
-
-  const images = await Promise.all(
-    withTech.map((p) => listProjectImages(p.slug)),
-  );
-
-  return withTech.map((p, i) => ({
-    ...p,
-    cover: images[i]?.cover ?? undefined,
+export function getProjectSummaries(locale: Locale): ProjectSummary[] {
+  return visibleSlugs().map((slug) => ({
+    slug,
+    title: projectsI18n[locale][slug].title,
   }));
 }
 
-export const getProjects = cache(fetchProjects);
+// Wrapped in React cache: page, metadata and OG image share one call per
+// request. Network data below is cached across requests by fetch (see cdn.ts)
+export const getProjects = cache(async (locale: Locale): Promise<Project[]> => {
+  const technologies = technologyMap(locale);
+  const list = visibleSlugs()
+    .map((slug) => buildProject(slug, locale, technologies))
+    .toSorted((a, b) => b.date.localeCompare(a.date));
 
-async function fetchProjectBySlug(
-  slug: string,
-  locale: Locale,
-): Promise<(ProjectWithTechnologies & { screens: string[] }) | null> {
-  const safeLocale = resolveLocale(locale);
-  const technologies = buildTechnologies(safeLocale);
-  const i18n = I18N_BY_LOCALE[safeLocale] as Record<string, ProjectI18n>;
-
-  const bases = projectBase as Array<
-    Omit<Project, "title" | "description" | "type" | "category">
-  >;
-
-  const base = bases.find((p) => p.slug === slug);
-  if (!base || base.isHidden) return null;
-
-  const project = buildProject(base, i18n);
-  const [projectWithTech] = mergeProjectsWithTechnologies(
-    [project],
-    technologies,
+  const images = await Promise.all(
+    list.map((project) => listProjectImages(project.slug)),
   );
-  if (!projectWithTech) return null;
-  const [images, video] = await Promise.all([
-    listProjectImages(slug),
-    listProjectVideo(slug),
-  ]);
 
-  return {
-    ...projectWithTech,
-    cover: images.cover ?? undefined,
-    screens: images.screens,
-    video: video ?? undefined,
-  };
-}
+  return list.map((project, i) => ({
+    ...project,
+    cover: images[i]?.cover ?? undefined,
+  }));
+});
 
-export const getProjectBySlug = cache(fetchProjectBySlug);
+export const getProjectBySlug = cache(
+  async (slug: string, locale: Locale): Promise<ProjectDetail | null> => {
+    if (!isProjectSlug(slug) || projects[slug].isHidden) return null;
+
+    const project = buildProject(slug, locale, technologyMap(locale));
+    const [images, video] = await Promise.all([
+      listProjectImages(slug),
+      listProjectVideo(slug),
+    ]);
+
+    return {
+      ...project,
+      cover: images.cover ?? undefined,
+      screens: images.screens,
+      video: video ?? undefined,
+    };
+  },
+);

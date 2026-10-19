@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { Select } from "@/shared/ui/Select";
@@ -38,14 +37,15 @@ export function LanguageSelect({
   const t = useTranslations("a11y");
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   return (
     <Select
       value={locale}
       onChange={(nextLocale) => {
-        const qs = searchParams.toString();
-        router.replace(`${pathname}${qs ? `?${qs}` : ""}`, {
+        // Read at click time, not via useSearchParams(): the hook would make
+        // the navbar (in the layout) dynamic and block prerendering
+        const qs = window.location.search;
+        router.replace(`${pathname}${qs}`, {
           locale: nextLocale,
         });
       }}

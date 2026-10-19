@@ -8,11 +8,14 @@ type Props = {
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   ariaLabel?: string;
+  // Lets a <label htmlFor> name and toggle the switch
+  id?: string;
 };
 
-export function Switch({ checked, onChange, disabled, ariaLabel }: Props) {
+export function Switch({ checked, onChange, disabled, ariaLabel, id }: Props) {
   return (
     <RadixSwitch.Root
+      id={id}
       checked={checked}
       onCheckedChange={onChange}
       disabled={disabled}

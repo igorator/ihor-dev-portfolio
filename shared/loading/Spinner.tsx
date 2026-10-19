@@ -1,5 +1,3 @@
-"use client";
-
 import styles from "./Spinner.module.css";
 
 type SpinnerProps = {
@@ -7,6 +5,19 @@ type SpinnerProps = {
   className?: string;
 };
 
+// The eight outer cells of a 3×3 grid, walked clockwise from the top-left
+const CELLS = [
+  [0, 0],
+  [1, 0],
+  [2, 0],
+  [2, 1],
+  [2, 2],
+  [1, 2],
+  [0, 2],
+  [0, 1],
+] as const;
+
+// Pixel spinner: a lit cell runs around the ring with a fading tail
 export function Spinner({ size = 20, className }: SpinnerProps) {
   const dim = typeof size === "number" ? `${size}px` : size;
 
@@ -19,23 +30,20 @@ export function Spinner({ size = 20, className }: SpinnerProps) {
       <svg
         className={styles.spinner}
         style={{ width: dim, height: dim }}
-        viewBox="0 0 40 40"
-        fill="none"
+        viewBox="0 0 11 11"
+        shapeRendering="crispEdges"
         xmlns="http://www.w3.org/2000/svg"
         aria-busy="true"
       >
-        {Array.from({ length: 12 }, (_, i) => (
-          <line
+        {CELLS.map(([x, y], i) => (
+          <rect
             key={i}
-            x1="20"
-            y1="7"
-            x2="20"
-            y2="13"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            transform={`rotate(${i * 30} 20 20)`}
-            opacity={((12 - i) / 12).toFixed(2)}
+            className={styles.cell}
+            x={x * 4}
+            y={y * 4}
+            width="3"
+            height="3"
+            style={{ animationDelay: `${(i - CELLS.length) * 0.1}s` }}
           />
         ))}
       </svg>

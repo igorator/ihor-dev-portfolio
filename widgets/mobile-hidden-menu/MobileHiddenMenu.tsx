@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { BsX } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { Portal } from "@/shared/ui/Portal";
 import { LanguageSelect } from "@/widgets/language-select/LanguageSelect";
 import { Socials } from "@/widgets/socials/Socials";
@@ -64,7 +64,7 @@ export const MobileHiddenMenu: React.FC<Props> = ({ open, onClose }) => {
               onClick={onClose}
               aria-label={t("closeMenu")}
             >
-              <BsX className={styles.closeIcon} size={30} />
+              <icons.close className={styles.closeIcon} size={30} />
             </button>
           </div>
 

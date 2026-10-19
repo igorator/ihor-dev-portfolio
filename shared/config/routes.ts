@@ -1,19 +1,19 @@
-import { BsBriefcase, BsFolder2, BsHouse } from "react-icons/bs";
+import { icons } from "./icons";
 
 export const routes = {
   root: {
     path: "/",
     label: "Home",
-    icon: BsHouse,
+    icon: icons.home,
   },
   projects: {
     path: "/projects",
     label: "Projects",
-    icon: BsFolder2,
+    icon: icons.projects,
   },
   employment: {
     path: "/employment",
     label: "Employment",
-    icon: BsBriefcase,
+    icon: icons.employment,
   },
 } as const;

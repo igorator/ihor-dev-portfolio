@@ -1,7 +1,5 @@
-"use client";
-
 import { useTranslations } from "next-intl";
-import { BsGithub, BsGlobe2 } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { Card } from "@/shared/ui/Card";
 import type { GithubUrlValue } from "@/entities/project/types";
 import { normalizeGithubLinks } from "@/entities/project/lib/normalizeGithubLinks";
@@ -28,7 +26,11 @@ export function LinksCard({ demoUrl, githubUrl }: Props) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BsGlobe2 aria-hidden size={14} className={styles.githubIcon} />
+            <icons.website
+              aria-hidden
+              size={14}
+              className={styles.githubIcon}
+            />
             {t("liveDemo")}
           </a>
         ) : null}
@@ -41,7 +43,7 @@ export function LinksCard({ demoUrl, githubUrl }: Props) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BsGithub aria-hidden size={15} className={styles.githubIcon} />
+            <icons.github aria-hidden size={15} className={styles.githubIcon} />
             {link.label ?? t("github")}
           </a>
         ))}

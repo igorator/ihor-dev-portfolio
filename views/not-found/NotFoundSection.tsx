@@ -6,11 +6,11 @@ import {
   useReducedMotion,
   type Variants,
 } from "motion/react";
-import { BsArrowRight } from "react-icons/bs";
+import { icons } from "@/shared/config/icons";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Section } from "@/shared/ui/Section/Section";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
 import { routes } from "@/shared/config/routes";
 import styles from "./NotFoundSection.module.css";
 
@@ -83,7 +83,7 @@ export const NotFoundSection = ({ title }: Props) => {
 
         <motion.div className={styles.navList} variants={btnWrap}>
           {navLinks.map(({ href, label }) => (
-            <GlassSurface
+            <TerminalFrame
               key={href}
               style={
                 { "--gs-radius": "var(--radius-lg)" } as React.CSSProperties
@@ -91,9 +91,9 @@ export const NotFoundSection = ({ title }: Props) => {
             >
               <Link href={href} className={styles.btn}>
                 <span>{label}</span>
-                <BsArrowRight />
+                <icons.arrowRight />
               </Link>
-            </GlassSurface>
+            </TerminalFrame>
           ))}
         </motion.div>
       </motion.div>

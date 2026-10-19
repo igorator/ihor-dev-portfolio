@@ -1,67 +1,31 @@
-import { cache } from "react";
 import type { Locale } from "next-intl";
 
-import employmentBase from "@/entities/employment/data/employment_base.json";
-import employmentEn from "@/entities/employment/data/employment_en.json";
-import employmentUk from "@/entities/employment/data/employment_uk.json";
-
-import projectBase from "@/entities/project/data/project_base.json";
-import projectsEn from "@/entities/project/data/projects_en.json";
-import projectsUk from "@/entities/project/data/projects_uk.json";
-
+import {
+  employment,
+  type EmploymentId,
+} from "@/entities/employment/data/employment";
+import { employmentI18n } from "@/entities/employment/data/i18n";
 import type { Employment } from "@/entities/employment/types";
-import type { Project } from "@/entities/project/types";
-import { resolveLocale } from "@/shared/server/locale";
+import { getProjectSummaries } from "@/entities/project/api";
 
-type LocalizedMap = Record<
-  string,
-  { type: string; category?: string; position?: string; roles: string[] }
->;
-
-const EMPLOYMENT_BY_LANG: Record<Locale, LocalizedMap> = {
-  en: employmentEn as LocalizedMap,
-  uk: employmentUk as LocalizedMap,
-};
-
-function fetchEmployment(locale: Locale): Employment[] {
-  const safeLocale = resolveLocale(locale);
-  const localeMap = (EMPLOYMENT_BY_LANG[safeLocale] ??
-    EMPLOYMENT_BY_LANG.en) as LocalizedMap;
-  const enMap = EMPLOYMENT_BY_LANG.en as LocalizedMap;
-
-  const availableProjectSlugs = new Set(
-    (
-      projectBase as Array<
-        Omit<Project, "title" | "description" | "type" | "category">
-      >
-    )
-      .filter((projectEntry) => !projectEntry.isHidden)
-      .map((projectEntry) => projectEntry.slug),
+// Local data only: no I/O, so nothing to cache
+export function getEmployment(locale: Locale): Employment[] {
+  const projectsBySlug = new Map(
+    getProjectSummaries(locale).map((project) => [project.slug, project]),
   );
 
-  const projectsI18n = (
-    safeLocale === "uk" ? projectsUk : projectsEn
-  ) as Record<
-    string,
-    Pick<Project, "title" | "description" | "type" | "category">
-  >;
-
-  return employmentBase.map((baseItem) => {
-    const localizedEntry = localeMap[baseItem.id] ?? enMap[baseItem.id];
-
-    const linkedProjects = (baseItem.projects || [])
-      .filter((slug) => availableProjectSlugs.has(slug))
-      .map((slug) => ({ slug, title: projectsI18n[slug]?.title ?? slug }));
+  return (Object.keys(employment) as EmploymentId[]).map((id) => {
+    const { projects, ...base } = employment[id];
 
     return {
-      ...baseItem,
-      type: localizedEntry?.type ?? "unknown",
-      category: localizedEntry?.category,
-      position: localizedEntry?.position,
-      roles: localizedEntry?.roles ?? [],
-      linkedProjects,
-    } as Employment;
+      id,
+      ...base,
+      ...employmentI18n[locale][id],
+      // Hidden projects are absent from summaries and get dropped here
+      linkedProjects: projects.flatMap((slug) => {
+        const project = projectsBySlug.get(slug);
+        return project ? [project] : [];
+      }),
+    };
   });
 }
-
-export const getEmployment = cache(fetchEmployment);

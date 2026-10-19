@@ -1,5 +1,4 @@
+/* Border and pixel corners come from .pixel-frame in app/globals.css */
 .card {
-  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
 }

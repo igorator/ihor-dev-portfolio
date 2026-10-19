@@ -15,25 +15,30 @@ export type JsDelivrNode = {
 
 type JsDelivrTree = JsDelivrNode & { version?: string; hash?: string };
 
+// Asset listings change rarely: keep them in the Data Cache for 5 minutes
+const REVALIDATE_SECONDS = 300;
+
+// React cache dedupes calls within one render; fetch's Data Cache persists
+// the response across requests and revalidates it in the background
 export const fetchTree = cache(async (ref: string): Promise<JsDelivrTree> => {
   const dataUrl = `https://data.jsdelivr.com/v1/package/gh/${OWNER}/${REPO}@${ref}`;
-  const res = await fetch(dataUrl, { next: { revalidate: 300 } });
+  const res = await fetch(dataUrl, {
+    next: { revalidate: REVALIDATE_SECONDS },
+  });
   if (!res.ok) throw new Error("Failed to load jsDelivr package tree");
   return res.json();
 });
 
 export const resolveRef = cache(async (): Promise<string> => {
   const headers: Record<string, string> = {};
-  const token =
-    process.env.GITHUB_TOKEN ??
-    process.env.GH_TOKEN ??
-    process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+  // Server-only: never fall back to a NEXT_PUBLIC_ variable for a token
+  const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
   if (token) headers.Authorization = `Bearer ${token}`;
 
   try {
     const res = await fetch(GITHUB_COMMITS_API, {
       headers,
-      next: { revalidate: 300 },
+      next: { revalidate: REVALIDATE_SECONDS },
     });
     if (!res.ok) throw new Error("Failed to resolve ref");
     const data = await res.json();

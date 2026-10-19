@@ -1,74 +1,87 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import { Section } from "@/shared/ui/Section/Section";
-import type { ProjectWithTechnologies } from "@/entities/project/types";
+import type { Project } from "@/entities/project/types";
 import type { Technology } from "@/entities/technology/types";
-import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
-import { useProjectFilters } from "./_hooks/useProjectFilters";
-import { useViewMode } from "./_hooks/useViewMode";
+import {
+  applyFilters,
+  getAvailableTechnologies,
+  hasActiveFilters,
+  toQueryString,
+  type ProjectFilters,
+} from "./lib/filters";
+import {
+  ProjectsQuery,
+  PendingRegion,
+} from "./_components/ProjectsQuery/ProjectsQuery";
 import { FilterBar } from "./_components/FilterBar/FilterBar";
 import { ControlsBar } from "./_components/ControlsBar/ControlsBar";
 import { ProjectsGrid } from "./_components/ProjectGrid/ProjectsGrid";
 import styles from "./Projects.module.css";
 
 interface ProjectsSectionProps {
-  projects: ProjectWithTechnologies[];
+  projects: Project[];
   technologies: Technology[];
+  // Parsed from the page's searchParams
+  filters: ProjectFilters;
+  // Site-wide mode from projects config: show only commercial projects
+  commercialOnlyMode?: boolean;
 }
 
+// Server Component: filtering and sorting happen here, per request.
+// Client islands: ProjectsQuery (URL state), FilterBar, ControlsBar, the
+// grid's enter/exit animation and the commercial tooltip on each card
 export const ProjectsSection = ({
   projects,
   technologies,
+  filters,
+  commercialOnlyMode = false,
 }: ProjectsSectionProps) => {
   const t = useTranslations("projects");
 
-  const {
-    selectedTechs,
-    sortBy,
-    filteredProjects,
-    toggleTech,
-    setOnlyTechnology,
-    setSortBy,
-    availableTechnologies,
-    commercialOnly,
-    setCommercialOnly,
-    hasActiveFilters,
-    clearAll,
-  } = useProjectFilters(projects, technologies);
+  const visibleProjects = commercialOnlyMode
+    ? projects.filter((p) => p.isCommercial)
+    : projects;
 
-  const { viewMode, toggleViewMode } = useViewMode();
+  const filteredProjects = applyFilters(visibleProjects, {
+    ...filters,
+    // The switch is hidden in this mode, so ignore a stale ?commercial=false
+    commercialOnly: commercialOnlyMode || filters.commercialOnly,
+  });
 
-  useScrollToTop(selectedTechs.join(","), sortBy, commercialOnly);
+  const techHref = (techId: string) =>
+    `/projects${toQueryString({ ...filters, techs: [techId] })}`;
 
   return (
     <Section className={styles.projectSection}>
-      <h2 className={styles.title}>{t("title")}</h2>
+      <h2 className={`prompt-title ${styles.title}`}>{t("title")}</h2>
 
-      <div className={styles.controlsRow}>
-        <FilterBar
-          availableTechnologies={availableTechnologies}
-          technologies={technologies}
-          selectedTechs={selectedTechs}
-          onToggleTech={toggleTech}
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-          commercialOnly={commercialOnly}
-          onCommercialChange={setCommercialOnly}
-          onClearAll={clearAll}
-          hasActiveFilters={hasActiveFilters}
-        />
-        <ControlsBar viewMode={viewMode} onToggleView={toggleViewMode} />
-      </div>
+      <ProjectsQuery>
+        <div className={styles.controlsRow}>
+          <FilterBar
+            technologies={getAvailableTechnologies(
+              visibleProjects,
+              technologies,
+            )}
+            showCommercialSwitch={!commercialOnlyMode}
+          />
+          <ControlsBar />
+        </div>
 
-      <ProjectsGrid
-        projects={filteredProjects}
-        commercialCount={projects.filter((p) => p.isCommercial).length}
-        personalCount={projects.filter((p) => !p.isCommercial).length}
-        onTechnologyClick={setOnlyTechnology}
-        viewMode={viewMode}
-        hasActiveFilters={hasActiveFilters}
-      />
+        <PendingRegion>
+          <ProjectsGrid
+            projects={filteredProjects}
+            commercialCount={projects.filter((p) => p.isCommercial).length}
+            personalCount={
+              commercialOnlyMode
+                ? undefined
+                : projects.filter((p) => !p.isCommercial).length
+            }
+            viewMode={filters.view}
+            showStats={!hasActiveFilters(filters)}
+            techHref={techHref}
+          />
+        </PendingRegion>
+      </ProjectsQuery>
     </Section>
   );
 };

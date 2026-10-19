@@ -1,67 +1,43 @@
 "use client";
 
-import { useState } from "react";
 import { useTheme } from "@/shared/hooks/useTheme";
-import { Spinner } from "@/shared/loading/Spinner";
-import { Grainient } from "./Grainient";
+import { readCssColor } from "@/shared/lib/cssColor";
+import { GradientASCII } from "./GradientASCII/GradientASCII";
 import styles from "./AppBackground.module.css";
 
-const ANIMATION = {
-  timeSpeed: 0.65,
-  warpSpeed: 2.0,
-  warpStrength: 1.0,
-  warpAmplitude: 50,
-  warpFrequency: 5.0,
-  rotationAmount: 500,
-  grainAmount: 0.1,
-  grainScale: 2.0,
-  zoom: 0.8,
-};
+// Ramp comes from --background-ascii-* in app/globals.css (switches with the
+// theme); hex values are only used before CSS is available
+const readRamp = (isDark: boolean) => [
+  readCssColor("--background-ascii-1", isDark ? "#101011" : "#f8f8f9"),
+  readCssColor("--background-ascii-2", isDark ? "#2c2c2d" : "#dadadd"),
+  readCssColor("--background-ascii-3", isDark ? "#646467" : "#a9a9ad"),
+  readCssColor("--background-ascii-4", isDark ? "#c8c8cd" : "#52525b"),
+];
 
-const DARK = {
-  color1: "#1e3d6e",
-  color2: "#0a1628",
-  color3: "#000000",
-  contrast: 1.2,
-  saturation: 0.9,
-};
-
-const LIGHT = {
-  color1: "#9fc8f0",
-  color2: "#d4e8ff",
-  color3: "#f5f8ff",
-  contrast: 1.1,
-  saturation: 0.85,
-};
+// The site font (next/font gives it a generated family name, exposed via CSS)
+const readFont = () =>
+  typeof document === "undefined"
+    ? undefined
+    : getComputedStyle(document.documentElement)
+        .getPropertyValue("--font-text")
+        .trim() || undefined;
 
 export function AppBackground() {
   const { isDark } = useTheme();
-  const [ready, setReady] = useState(false);
-  const [unmounted, setUnmounted] = useState(false);
-  const COLORS = isDark ? DARK : LIGHT;
-
-  const handleReady = () => {
-    setTimeout(() => {
-      setReady(true);
-      setTimeout(() => setUnmounted(true), 900);
-    }, 500);
-  };
 
   return (
-    <>
-      <div className={styles.wrapper} aria-hidden="true">
-        <Grainient {...ANIMATION} {...COLORS} onReady={handleReady} />
-      </div>
-
-      {!unmounted && (
-        <div
-          className={styles.loader}
-          data-ready={ready || undefined}
-          aria-hidden="true"
-        >
-          <Spinner size={36} />
-        </div>
-      )}
-    </>
+    <div className={styles.wrapper} aria-hidden="true">
+      <GradientASCII
+        colors={readRamp(isDark)}
+        lightMode={!isDark}
+        fontFamily={readFont()}
+        shape="horizon"
+        gradientOpacity={0.6}
+        glyphOpacity={0.7}
+        glow={0.15}
+        // Pointer effects run on window events; the wrapper ignores clicks
+        clickEffect="none"
+      />
+    </div>
   );
 }

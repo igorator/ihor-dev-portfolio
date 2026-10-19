@@ -104,6 +104,8 @@
   "employment": {
     "title": "Employment History",
     "linkedProjects": "Linked projects",
+    "website": "Website",
+    "websiteAria": "{company} website (opens in a new tab)",
     "present": "Present"
   },
 

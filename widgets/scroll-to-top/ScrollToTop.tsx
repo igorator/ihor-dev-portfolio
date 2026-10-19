@@ -3,8 +3,8 @@
 import { startTransition, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { GlassSurface } from "@/shared/ui/GlassSurface/GlassSurface";
-import { BsArrowUp } from "react-icons/bs";
+import { TerminalFrame } from "@/shared/ui/TerminalFrame/TerminalFrame";
+import { icons } from "@/shared/config/icons";
 import styles from "./ScrollToTop.module.css";
 
 type Props = {
@@ -25,16 +25,16 @@ export const ScrollToTop = ({ variant = "fixed", className }: Props) => {
   }, []);
 
   const surface = (
-    <GlassSurface className={styles.surface}>
+    <TerminalFrame className={styles.surface}>
       <button
         className={styles.button}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         aria-label={t("scrollToTop")}
         title={t("scrollToTop")}
       >
-        <BsArrowUp className={styles.icon} />
+        <icons.arrowUp className={styles.icon} />
       </button>
-    </GlassSurface>
+    </TerminalFrame>
   );
 
   if (variant === "inline") {
