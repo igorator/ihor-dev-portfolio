@@ -2,6 +2,7 @@ import { Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppBackground } from "@/shared/ui/Background/AppBackground";
+import { ThemeSync } from "./ThemeSync";
 
 // One monospace family for everything, matching the ASCII background
 // (which reads --font-text to draw its glyphs in the same face)
@@ -43,6 +44,7 @@ export function Document({
         <InlineScript html={themeScript} />
       </head>
       <body>
+        <ThemeSync />
         <AppBackground />
         <Analytics />
         <SpeedInsights />

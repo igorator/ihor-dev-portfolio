@@ -41,6 +41,8 @@ export const ScrollToTop = ({ variant = "fixed", className }: Props) => {
     return (
       <motion.div
         className={`${styles.inline} ${className ?? ""}`}
+        // Start hidden: no fade-out flash when the tree remounts (e.g. locale switch)
+        initial={false}
         animate={{
           opacity: visible ? 1 : 0,
           scale: prefersReduced ? 1 : visible ? 1 : 0.75,
@@ -56,6 +58,8 @@ export const ScrollToTop = ({ variant = "fixed", className }: Props) => {
   return (
     <motion.div
       className={styles.positioner}
+      // Start hidden: no fade-out flash when the tree remounts (e.g. locale switch)
+      initial={false}
       animate={{
         opacity: visible ? 1 : 0,
         scale: prefersReduced ? 1 : visible ? 1 : 0.75,
