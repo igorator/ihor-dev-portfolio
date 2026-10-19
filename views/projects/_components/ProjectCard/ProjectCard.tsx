@@ -7,7 +7,7 @@ import type { GithubUrlValue } from "@/entities/project/types";
 import { normalizeGithubLinks } from "@/entities/project/lib/normalizeGithubLinks";
 import { FadeMask } from "@/shared/ui/FadeMask";
 import { ProjectCardTooltip } from "./ProjectCardTooltip/ProjectCardTooltip";
-import { asciiField } from "../../lib/asciiField";
+import { asciiField } from "@/shared/lib/asciiField";
 import styles from "./ProjectCard.module.css";
 
 export type ProjectCardProps = {

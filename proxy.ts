@@ -9,5 +9,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*|favicon.ico).*)"],
+  // Generated OG images are linked with the locale prefix; skip the
+  // as-needed redirect so crawlers get the PNG directly
+  matcher: ["/((?!api|_next|.*opengraph-image|.*\\..*|favicon.ico).*)"],
 };

@@ -7,9 +7,7 @@ export const contentType = ogContentType;
 
 export default function Image() {
   return renderOgImage({
-    eyebrow: siteConfig.og.subtitle,
     title: siteConfig.name,
-    description: siteConfig.description,
-    tags: siteConfig.keywords.slice(1, 5).map((label) => ({ label })),
+    description: siteConfig.og.subtitle,
   });
 }

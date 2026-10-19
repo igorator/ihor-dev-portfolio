@@ -6,8 +6,7 @@ export const siteConfig = {
   url: host ? `https://${host}` : "http://localhost:3000",
   name: "Ihor Kliushnyk",
   author: "Ihor Kliushnyk",
-  description:
-    "Developer specializing in React, Next.js, and TypeScript — building fast, accessible, production-grade web applications.",
+  description: "Full-Stack Developer",
   keywords: [
     "Developer",
     "React",
@@ -24,9 +23,8 @@ export const siteConfig = {
   },
   pages: {
     home: {
-      title: "Ihor Kliushnyk — Developer",
-      description:
-        "Developer specializing in React, Next.js, and TypeScript. Building performant, accessible web applications and modern UI.",
+      title: "Ihor Kliushnyk",
+      description: "Full-Stack Developer",
     },
     projects: {
       title: "Projects",
@@ -44,7 +42,7 @@ export const siteConfig = {
   },
   og: {
     brand: "Ihor Kliushnyk",
-    subtitle: "Developer",
+    subtitle: "Full-Stack Developer",
     // Keep in sync with --accent-dark in app/globals.css
     accent: "#7d8894",
   },
